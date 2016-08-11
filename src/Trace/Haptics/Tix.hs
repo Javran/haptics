@@ -1,5 +1,7 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Trace.Haptics.Tix where
 
+import Prelude hiding (takeWhile)
 import Data.Int
 import Data.Word
 import Data.Char
@@ -18,13 +20,13 @@ data TixModule = TixModule
   }
 
 parseModuleName :: Parser T.Text
-parseModuleName = T.intersperse '.' <$> parseModid
+parseModuleName = T.intercalate "." <$> parseModid
   where
     parseConid :: Parser T.Text
     parseConid = do
-        c <- satisfy isUpper
+        ch <- satisfy isUpper
         cs <- takeWhile (\c -> isLower c || isUpper c || isDigit c || c == '\'')
-        pure (T.cons c cs)
+        pure (T.cons ch cs)
 
     parseModid :: Parser [T.Text]
     parseModid = parseConid `sepBy1` char '.'
