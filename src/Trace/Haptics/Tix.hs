@@ -17,8 +17,14 @@ data TixModule = TixModule
   , tixModuleTixs :: [Int64]
   }
 
-parseConid :: Parser T.Text
-parseConid = do
-    c <- satisfy isUpper
-    cs <- takeWhile (\c -> isLower c || isUpper c || isDigit c || c == '\'')
-    pure (T.cons c cs)
+parseModuleName :: Parser T.Text
+parseModuleName = T.intersperse '.' <$> parseModid
+  where
+    parseConid :: Parser T.Text
+    parseConid = do
+        c <- satisfy isUpper
+        cs <- takeWhile (\c -> isLower c || isUpper c || isDigit c || c == '\'')
+        pure (T.cons c cs)
+
+    parseModid :: Parser [T.Text]
+    parseModid = parseConid `sepBy1` char '.'
