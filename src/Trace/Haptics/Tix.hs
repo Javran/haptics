@@ -2,6 +2,7 @@
 module Trace.Haptics.Tix where
 
 import Prelude hiding (takeWhile)
+import Data.Functor
 import Data.Int
 import Data.Word
 import Data.Char
@@ -17,7 +18,7 @@ data TixModule = TixModule
   , tixModuleHash :: Hash
   , tixModuleListLen :: Int
   , tixModuleTixs :: [Int64]
-  }
+  } deriving Show
 
 parseModuleName :: Parser T.Text
 parseModuleName = T.intercalate "." <$> parseModid
@@ -33,17 +34,17 @@ parseModuleName = T.intercalate "." <$> parseModid
 
 parseTixModule :: Parser TixModule
 parseTixModule = do
-    "TixModule"
-    space
-    "\""
+    void "TixModule"
+    skipSpace
+    void "\""
     mn <- parseModuleName
-    "\""
-    space
+    void "\""
+    skipSpace
     h <- decimal
-    space
+    skipSpace
     l <- decimal
-    space
-    "["
-    tixs <- decimal `sepBy` char ','
-    "]"
+    skipSpace
+    void "["
+    tixs <- decimal `sepBy` (char ',' >> skipSpace)
+    void "]"
     pure (TixModule mn h l tixs)
