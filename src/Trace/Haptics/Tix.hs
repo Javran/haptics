@@ -9,7 +9,7 @@ import Data.Char
 import Data.Attoparsec.Text
 import qualified Data.Text as T
 
-data Tix = Tix [TixModule]
+data Tix = Tix [TixModule] deriving Show
 
 type Hash = Word32
 
@@ -34,17 +34,21 @@ parseModuleName = T.intercalate "." <$> parseModid
 
 parseTixModule :: Parser TixModule
 parseTixModule = do
-    void "TixModule"
-    skipSpace
+    "TixModule" >> skipSpace
     void "\""
     mn <- parseModuleName
-    void "\""
-    skipSpace
-    h <- decimal
-    skipSpace
-    l <- decimal
-    skipSpace
+    "\"" >> skipSpace
+    h <- decimal <* skipSpace
+    l <- decimal <* skipSpace
     void "["
     tixs <- decimal `sepBy` (char ',' >> skipSpace)
     void "]"
     pure (TixModule mn h l tixs)
+
+parseTix :: Parser Tix
+parseTix = do
+    "Tix" >> skipSpace
+    "[" >> skipSpace
+    tms <- parseTixModule `sepBy` (char ',' >> skipSpace)
+    void "]"
+    pure (Tix tms)
