@@ -30,3 +30,20 @@ parseModuleName = T.intercalate "." <$> parseModid
 
     parseModid :: Parser [T.Text]
     parseModid = parseConid `sepBy1` char '.'
+
+parseTixModule :: Parser TixModule
+parseTixModule = do
+    "TixModule"
+    space
+    "\""
+    mn <- parseModuleName
+    "\""
+    space
+    h <- decimal
+    space
+    l <- decimal
+    space
+    "["
+    tixs <- decimal `sepBy` char ','
+    "]"
+    pure (TixModule mn h l tixs)
