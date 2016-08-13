@@ -10,7 +10,6 @@ import Data.Attoparsec.Text
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
 import qualified Control.Exception as Exc
-import Debug.Trace
 
 data Tix = Tix [TixModule] deriving Show
 
@@ -56,11 +55,16 @@ parseTix = do
     void "]"
     pure (Tix tms)
 
+checkTix :: Tix -> Bool
+checkTix (Tix tms) = all checkTixModule tms
+  where
+    checkTixModule (TixModule _ _ l xs) = length xs == l
+
 readTix :: FilePath -> IO (Maybe Tix)
 readTix fp = Exc.catch
     (do content <- T.readFile fp
         let result = parseOnly (parseTix <* skipSpace <* endOfInput) content
         pure $ case result of
-            Left i -> traceShow (show i) Nothing
+            Left _ -> Nothing
             Right r -> Just r)
     (\ (_ :: Exc.IOException) -> pure Nothing)
