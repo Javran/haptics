@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings, ScopedTypeVariables #-}
 module Trace.Haptics.Tix where
 
 import Prelude hiding (takeWhile)
@@ -8,6 +8,9 @@ import Data.Word
 import Data.Char
 import Data.Attoparsec.Text
 import qualified Data.Text as T
+import qualified Data.Text.IO as T
+import qualified Control.Exception as Exc
+import Debug.Trace
 
 data Tix = Tix [TixModule] deriving Show
 
@@ -52,3 +55,12 @@ parseTix = do
     tms <- parseTixModule `sepBy` (char ',' >> skipSpace)
     void "]"
     pure (Tix tms)
+
+readTix :: FilePath -> IO (Maybe Tix)
+readTix fp = Exc.catch
+    (do content <- T.readFile fp
+        let result = parseOnly (parseTix <* skipSpace <* endOfInput) content
+        pure $ case result of
+            Left i -> traceShow (show i) Nothing
+            Right r -> Just r)
+    (\ (_ :: Exc.IOException) -> pure Nothing)
