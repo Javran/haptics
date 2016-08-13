@@ -68,3 +68,7 @@ readTix fp = Exc.catch
             Left _ -> Nothing
             Right r -> Just r)
     (\ (_ :: Exc.IOException) -> pure Nothing)
+
+-- TODO: see https://github.com/ghc/ghc/blob/master/utils/hpc/HpcCombine.hs
+-- for now our task is to try doing the same but more efficiently,
+-- one way would be turning Tix into a Map from (<module name>,<hash>) to tix module data.
