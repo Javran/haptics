@@ -10,8 +10,9 @@ import Data.Attoparsec.Text
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
 import qualified Control.Exception as Exc
+import qualified Data.Map.Strict as M
 
-data Tix = Tix [TixModule] deriving Show
+data Tix = Tix (M.Map T.Text TixModule) deriving Show
 
 type Hash = Word32
 
@@ -53,7 +54,7 @@ parseTix = do
     "[" >> skipSpace
     tms <- parseTixModule `sepBy` (char ',' >> skipSpace)
     void "]"
-    pure (Tix tms)
+    pure (Tix . M.fromList . map (\x -> (tixModuleName x, x)) $ tms)
 
 checkTix :: Tix -> Bool
 checkTix (Tix tms) = all checkTixModule tms
