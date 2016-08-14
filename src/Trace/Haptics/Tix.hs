@@ -73,3 +73,13 @@ readTix fp = Exc.catch
 -- TODO: see https://github.com/ghc/ghc/blob/master/utils/hpc/HpcCombine.hs
 -- for now our task is to try doing the same but more efficiently,
 -- one way would be turning Tix into a Map from (<module name>,<hash>) to tix module data.
+mergeTix :: Tix -> Tix -> Tix
+mergeTix (Tix tas) (Tix tbs) = Tix (M.unionWith mergeTixModule tas tbs)
+  where
+    mergeTixModule (TixModule f1 h1 l1 ts1) (TixModule _ h2 l2 ts2)
+        | h1 /= h2 = error "hash mismatch"
+        | l1 /= l2 = error "tix len mismatch"
+        | otherwise = let newTs = zipWith (+) ts1 ts2 in TixModule f1 h1 l1 newTs
+
+equal :: Eq a => a -> a -> Maybe a
+equal v1 v2 = if v1 == v2 then Just v1 else Nothing
