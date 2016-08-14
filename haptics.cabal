@@ -21,6 +21,7 @@ library
                      , bytestring
                      , attoparsec
                      , containers
+                     , vector
 
   default-language:    Haskell2010
 

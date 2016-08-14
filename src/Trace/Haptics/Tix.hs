@@ -11,6 +11,7 @@ import qualified Data.Text as T
 import qualified Data.Text.IO as T
 import qualified Control.Exception as Exc
 import qualified Data.Map.Strict as M
+import qualified Data.Vector as V
 
 data Tix = Tix (M.Map T.Text TixModule) deriving Show
 
@@ -20,7 +21,7 @@ data TixModule = TixModule
   { tixModuleName :: T.Text
   , tixModuleHash :: Hash
   , tixModuleListLen :: Int
-  , tixModuleTixs :: [Int64]
+  , tixModuleTixs :: V.Vector Int64
   } deriving Show
 
 parseModuleName :: Parser T.Text
@@ -46,7 +47,7 @@ parseTixModule = do
     void "["
     tixs <- decimal `sepBy` (char ',' >> skipSpace)
     void "]"
-    pure (TixModule mn h l tixs)
+    pure (TixModule mn h l (V.fromList tixs))
 
 parseTix :: Parser Tix
 parseTix = do
@@ -79,7 +80,7 @@ mergeTix (Tix tas) (Tix tbs) = Tix (M.unionWith mergeTixModule tas tbs)
     mergeTixModule (TixModule f1 h1 l1 ts1) (TixModule _ h2 l2 ts2)
         | h1 /= h2 = error "hash mismatch"
         | l1 /= l2 = error "tix len mismatch"
-        | otherwise = let newTs = zipWith (+) ts1 ts2 in TixModule f1 h1 l1 newTs
+        | otherwise = let newTs = V.zipWith (+) ts1 ts2 in TixModule f1 h1 l1 newTs
 
 equal :: Eq a => a -> a -> Maybe a
 equal v1 v2 = if v1 == v2 then Just v1 else Nothing
