@@ -36,25 +36,27 @@ parseModuleName = T.intercalate "." <$> parseModid
     parseModid :: Parser [T.Text]
     parseModid = parseConid `sepBy1` char '.'
 
+between :: Parser open -> Parser close -> Parser a -> Parser a
+between op cl m = op *> m <* cl
+
 parseTixModule :: Parser TixModule
 parseTixModule = do
-    "TixModule" >> skipSpace
-    void "\""
-    mn <- parseModuleName
-    "\"" >> skipSpace
+    mn <- between
+            ("TixModule" >> skipSpace >> "\"")
+            ("\"" >> skipSpace)
+            parseModuleName
     h <- decimal <* skipSpace
     l <- decimal <* skipSpace
-    void "["
-    tixs <- decimal `sepBy` (char ',' >> skipSpace)
-    void "]"
+    tixs <- between "[" "]" $
+        decimal `sepBy` (char ',' >> skipSpace)
     pure (TixModule mn h l (V.fromList tixs))
 
 parseTix :: Parser Tix
 parseTix = do
-    "Tix" >> skipSpace
-    "[" >> skipSpace
-    tms <- parseTixModule `sepBy` (char ',' >> skipSpace)
-    void "]"
+    tms <- between
+             ("Tix" >> skipSpace >> "[" >> skipSpace)
+             "]"
+             (parseTixModule `sepBy` (char ',' >> skipSpace))
     pure (Tix . M.fromList . map (\x -> (tixModuleName x, x)) $ tms)
 
 checkTix :: Tix -> Bool
