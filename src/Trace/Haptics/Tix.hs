@@ -11,6 +11,7 @@ import qualified Data.Text.IO as T
 import qualified Control.Exception as Exc
 import qualified Data.Map.Strict as M
 import qualified Data.Vector as V
+import qualified Data.List as L
 
 data Tix = Tix (M.Map T.Text TixModule) deriving Show
 
@@ -44,7 +45,7 @@ parseTixModule = do
             ("\"" >> skipSpace)
             parseModuleName
     h <- decimal <* skipSpace
-    _ <- decimal <* skipSpace :: Parser Int64
+    (_ :: Int64) <- decimal <* skipSpace
     tixs <- between "[" "]" $
         decimal `sepBy` (char ',' >> skipSpace)
     pure (TixModule mn h (V.fromList tixs))
@@ -79,3 +80,15 @@ mergeTix (Tix tas) (Tix tbs) = Tix (M.unionWith mergeTixModule tas tbs)
 
 equal :: Eq a => a -> a -> Maybe a
 equal v1 v2 = if v1 == v2 then Just v1 else Nothing
+
+writeTix :: FilePath -> Tix -> IO ()
+writeTix fp (Tix tms) = writeFile fp content
+  where
+    content = "Tix [" ++ L.intercalate "," tmContents ++ "]"
+    tmContents :: [String]
+    tmContents = map (pprTixModule . snd) (M.toList tms)
+    pprTixModule (TixModule mn h tvs) =
+        "TixModule \"" ++ T.unpack mn ++ "\" " ++ show h
+        ++ " " ++ show (V.length tvs) ++ " ["
+        ++ L.intercalate "," (map show . V.toList $ tvs)
+        ++ "]"
