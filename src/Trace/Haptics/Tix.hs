@@ -6,6 +6,7 @@ import Data.Int
 import Data.Word
 import Data.Char
 import Data.Attoparsec.Text
+import Data.Maybe
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
 import qualified Control.Exception as Exc
@@ -86,11 +87,11 @@ mergeTix (Tix tas) (Tix tbs) = Tix (M.unionWith mergeTixModule tas tbs)
 mergeTix2 :: TModKeyMergeFunc S.Set T.Text
           -> TickMergeFunc Int64
           -> Tix -> Tix -> Tix
-mergeTix2 tKeyMf tMf (Tix tas) (Tix tbs) = Tix (M.fromList $ concatMap mergeTixModule mergedKeys)
+mergeTix2 tKeyMf tMf (Tix tas) (Tix tbs) = Tix (M.fromList $ mapMaybe mergeTixModule mergedKeys)
   where
     mergedKeys = S.toList $ M.keysSet tas `tKeyMf` M.keysSet tbs
     mergeTixModule tmName = case (M.lookup tmName tas, M.lookup tmName tbs) of
-        (Nothing, Nothing) -> []
+        (Nothing, Nothing) -> Nothing -- should not be possible
         (Just l, Nothing) -> pure (tmName,l)
         (Nothing, Just r) -> pure (tmName,r)
         (Just (TixModule _ h1 tvs1), Just (TixModule _ h2 tvs2)) -> do
