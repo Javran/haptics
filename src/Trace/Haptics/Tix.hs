@@ -67,9 +67,10 @@ readTix fp = Exc.catch
             Right r -> Just r)
     (\ (_ :: Exc.IOException) -> pure Nothing)
 
--- TODO: see https://github.com/ghc/ghc/blob/master/utils/hpc/HpcCombine.hs
--- for now our task is to try doing the same but more efficiently,
--- one way would be turning Tix into a Map from (<module name>,<hash>) to tix module data.
+
+-- TODO: implement different merging strategies:
+-- - union / intersection (could be either "unionWith" or "intersectionWith")
+-- - how to merge ticks: ADD / SUB / DIFF
 mergeTix :: Tix -> Tix -> Tix
 mergeTix (Tix tas) (Tix tbs) = Tix (M.unionWith mergeTixModule tas tbs)
   where
