@@ -12,6 +12,8 @@ import qualified Control.Exception as Exc
 import qualified Data.Map.Strict as M
 import qualified Data.Vector as V
 import qualified Data.List as L
+import qualified Data.Set as S
+import Control.Monad
 
 data Tix = Tix (M.Map T.Text TixModule) deriving Show
 
@@ -67,6 +69,8 @@ readTix fp = Exc.catch
             Right r -> Just r)
     (\ (_ :: Exc.IOException) -> pure Nothing)
 
+type TModKeyMergeFunc set a = set a -> set a -> set a
+type TickMergeFunc a = a -> a -> a
 
 -- TODO: implement different merging strategies:
 -- - union / intersection (could be either "unionWith" or "intersectionWith")
@@ -78,6 +82,21 @@ mergeTix (Tix tas) (Tix tbs) = Tix (M.unionWith mergeTixModule tas tbs)
         | h1 /= h2 = error "hash mismatch"
         | V.length tvs1 /= V.length tvs2 = error "tix len mismatch"
         | otherwise = let newTs = V.zipWith (+) tvs1 tvs2 in TixModule f1 h1 newTs
+
+mergeTix2 :: TModKeyMergeFunc S.Set T.Text
+          -> TickMergeFunc Int64
+          -> Tix -> Tix -> Tix
+mergeTix2 tKeyMf tMf (Tix tas) (Tix tbs) = Tix (M.fromList $ concatMap mergeTixModule mergedKeys)
+  where
+    mergedKeys = S.toList $ M.keysSet tas `tKeyMf` M.keysSet tbs
+    mergeTixModule tmName = case (M.lookup tmName tas, M.lookup tmName tbs) of
+        (Nothing, Nothing) -> []
+        (Just l, Nothing) -> pure (tmName,l)
+        (Nothing, Just r) -> pure (tmName,r)
+        (Just (TixModule _ h1 tvs1), Just (TixModule _ h2 tvs2)) -> do
+            guard (h1 == h2 && V.length tvs1 == V.length tvs2)
+            let merged = V.zipWith tMf tvs1 tvs2
+            pure (tmName, TixModule tmName h1 merged)
 
 equal :: Eq a => a -> a -> Maybe a
 equal v1 v2 = if v1 == v2 then Just v1 else Nothing
