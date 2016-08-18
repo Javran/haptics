@@ -18,7 +18,6 @@ import Control.Monad
 
 data Tix = Tix (M.Map T.Text TixModule) deriving Show
 
-
 type Hash = Word32
 
 data TixModule = TixModule
@@ -80,6 +79,11 @@ data TickMergeStrategy
   | TickSub
   | TickDiff
 
+data TickTransform
+  = TickTrId
+  | TickTrInv
+  | TickTrZero
+
 mergeTix :: TixModuleMergeStrategy
          -> TickMergeStrategy
          -> Tix -> Tix -> Tix
@@ -97,7 +101,17 @@ mergeTix tmmStgy tmStgy  (Tix tas) (Tix tbs) =
     mergeTixModule (TixModule f1 h1 tvs1) (TixModule _ h2 tvs2)
         | h1 /= h2 = error "hash mismatch"
         | V.length tvs1 /= V.length tvs2 = error "tix len mismatch"
-        | otherwise = let newTs = V.zipWith mergeTick tvs1 tvs2 in TixModule f1 h1 newTs
+        | otherwise =
+            TixModule f1 h1 (V.zipWith mergeTick tvs1 tvs2)
+
+transformTix :: TickTransform -> Tix -> Tix
+transformTix tt (Tix tix) = Tix (M.map trTixModule tix)
+  where
+    trTixModule (TixModule f h tvs) = TixModule f h (V.map tr tvs)
+    tr = case tt of
+        TickTrId -> id
+        TickTrInv -> \x -> if x == 0 then 1 else 0
+        TickTrZero -> const 0
 
 equal :: Eq a => a -> a -> Maybe a
 equal v1 v2 = if v1 == v2 then Just v1 else Nothing
