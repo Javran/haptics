@@ -18,6 +18,7 @@ import Control.Monad
 
 data Tix = Tix (M.Map T.Text TixModule) deriving Show
 
+
 type Hash = Word32
 
 data TixModule = TixModule
@@ -70,34 +71,33 @@ readTix fp = Exc.catch
             Right r -> Just r)
     (\ (_ :: Exc.IOException) -> pure Nothing)
 
-type TModKeyMergeFunc set a = set a -> set a -> set a
-type TickMergeFunc a = a -> a -> a
+data TixModuleMergeStrategy
+  = TMMergeByUnion
+  | TMMergeByIntersection
 
--- TODO: implement different merging strategies:
--- - union / intersection (could be either "unionWith" or "intersectionWith")
--- - how to merge ticks: ADD / SUB / DIFF
-mergeTix :: Tix -> Tix -> Tix
-mergeTix (Tix tas) (Tix tbs) = Tix (M.unionWith mergeTixModule tas tbs)
+data TickMergeStrategy
+  = TickAdd
+  | TickSub
+  | TickDiff
+
+mergeTix :: TixModuleMergeStrategy
+         -> TickMergeStrategy
+         -> Tix -> Tix -> Tix
+mergeTix tmmStgy tmStgy  (Tix tas) (Tix tbs) =
+    Tix (mergeMapWith mergeTixModule tas tbs)
   where
+    mergeMapWith = case tmmStgy of
+        TMMergeByUnion -> M.unionWith
+        TMMergeByIntersection -> M.intersectionWith
+    mergeTick = case tmStgy of
+        TickAdd -> (+)
+        TickSub -> \ l r -> max 0 (l-r)
+        -- g for "good" and b for "bad"
+        TickDiff -> \ g b -> if g > 0 then 0 else min 1 b
     mergeTixModule (TixModule f1 h1 tvs1) (TixModule _ h2 tvs2)
         | h1 /= h2 = error "hash mismatch"
         | V.length tvs1 /= V.length tvs2 = error "tix len mismatch"
-        | otherwise = let newTs = V.zipWith (+) tvs1 tvs2 in TixModule f1 h1 newTs
-
-mergeTix2 :: TModKeyMergeFunc S.Set T.Text
-          -> TickMergeFunc Int64
-          -> Tix -> Tix -> Tix
-mergeTix2 tKeyMf tMf (Tix tas) (Tix tbs) = Tix (M.fromList $ mapMaybe mergeTixModule mergedKeys)
-  where
-    mergedKeys = S.toList $ M.keysSet tas `tKeyMf` M.keysSet tbs
-    mergeTixModule tmName = case (M.lookup tmName tas, M.lookup tmName tbs) of
-        (Nothing, Nothing) -> Nothing -- should not be possible
-        (Just l, Nothing) -> pure (tmName,l)
-        (Nothing, Just r) -> pure (tmName,r)
-        (Just (TixModule _ h1 tvs1), Just (TixModule _ h2 tvs2)) -> do
-            guard (h1 == h2 && V.length tvs1 == V.length tvs2)
-            let merged = V.zipWith tMf tvs1 tvs2
-            pure (tmName, TixModule tmName h1 merged)
+        | otherwise = let newTs = V.zipWith mergeTick tvs1 tvs2 in TixModule f1 h1 newTs
 
 equal :: Eq a => a -> a -> Maybe a
 equal v1 v2 = if v1 == v2 then Just v1 else Nothing
