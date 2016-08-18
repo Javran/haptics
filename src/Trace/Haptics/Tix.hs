@@ -6,15 +6,12 @@ import Data.Int
 import Data.Word
 import Data.Char
 import Data.Attoparsec.Text
-import Data.Maybe
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
 import qualified Control.Exception as Exc
 import qualified Data.Map.Strict as M
 import qualified Data.Vector as V
 import qualified Data.List as L
-import qualified Data.Set as S
-import Control.Monad
 
 data Tix = Tix (M.Map T.Text TixModule) deriving Show
 
