@@ -19,6 +19,8 @@ library:
   ghc-options:
     - -Wall
     - -O2
+  build-tools:
+    - happy
 
 executables:
   haptics:
