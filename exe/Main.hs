@@ -13,7 +13,7 @@ import HpcCombine
 import HpcShowTix
 import HpcDraft
 import HpcOverlay
-import Paths_hpc_bin
+import Paths_haptics
 
 helpList :: IO ()
 helpList =

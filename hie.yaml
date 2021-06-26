@@ -1,0 +1,8 @@
+cradle:
+  stack:
+    - path: "./src"
+      component: "haptics:lib"
+    - path: "./exe"
+      component: "haptics:exe:haptics"
+    - path: "./test"
+      component: "haptics:test:hspec"

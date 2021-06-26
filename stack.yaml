@@ -1,0 +1,8 @@
+resolver: lts-16.31
+
+packages:
+- .
+
+extra-deps:
+- git: https://github.com/ghc/packages-hpc.git
+  commit: 772de3f7b43e31178f042ba77c071594845363e3

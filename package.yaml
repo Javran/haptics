@@ -1,0 +1,51 @@
+name: haptics
+version: 0.1.0.0
+github: Javran/haptics
+license: BSD3
+author: Javran Cheng
+maintainer: javran.c@gmail.com
+description: description
+
+dependencies:
+- base
+- directory
+- filepath
+- containers
+- array
+- hpc
+
+library:
+  source-dirs: src
+  ghc-options:
+    - -Wall
+    - -O2
+
+executables:
+  haptics:
+    main: Main.hs
+    source-dirs: exe
+    dependencies:
+      - haptics
+    ghc-options:
+      - -Wall
+      - -O2
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+
+tests:
+  hspec:
+    main: Spec.hs
+    source-dirs:
+      - test
+    dependencies:
+      - haptics
+      - QuickCheck
+      - hspec
+    ghc-options:
+      - -Wall
+      - -O2
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+      - -main-is Spec
