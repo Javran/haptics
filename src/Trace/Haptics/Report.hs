@@ -1,7 +1,7 @@
----------------------------------------------------------
--- The main program for the hpc-report tool, part of HPC.
--- Colin Runciman and Andy Gill, June 2006
----------------------------------------------------------
+{-
+  The main program for the hpc-report tool, part of HPC.
+  Colin Runciman and Andy Gill, June 2006
+ -}
 
 module Trace.Haptics.Report (report_plugin) where
 
@@ -310,8 +310,6 @@ xmlBT (BT b t) = [("boxes", show b), ("count", show t)]
 
 xmlBBT :: BinBoxTixCounts -> [(String, String)]
 xmlBBT (BBT b tt tf bt) = [("boxes", show b), ("true", show tt), ("false", show tf), ("count", show (tt + tf + bt))]
-
-------------------------------------------------------------------------------
 
 report_options :: FlagOptSeq
 report_options =

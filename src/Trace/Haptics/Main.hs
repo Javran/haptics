@@ -126,8 +126,6 @@ help_main _ (sub_txt : _) =
 help_options :: FlagOptSeq
 help_options = id
 
-------------------------------------------------------------------------------
-
 version_plugin :: Plugin
 version_plugin =
   Plugin
@@ -142,5 +140,3 @@ version_plugin =
 
 version_main :: Flags -> [String] -> IO ()
 version_main _ _ = putStrLn ("hpc tools, version " ++ showVersion version)
-
-------------------------------------------------------------------------------

@@ -1,6 +1,7 @@
-------------------------------------------------------------
--- Andy Gill and Colin Runciman, June 2006
-------------------------------------------------------------
+{-
+
+  Andy Gill and Colin Runciman, June 2006
+ -}
 
 -- | Datatypes and file-access routines for the tick data file
 -- (@.tix@) used by Hpc.

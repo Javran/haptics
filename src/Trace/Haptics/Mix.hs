@@ -1,6 +1,6 @@
----------------------------------------------------------------
--- Colin Runciman and Andy Gill, June 2006
----------------------------------------------------------------
+{-
+  Colin Runciman and Andy Gill, June 2006
+ -}
 
 -- | Datatypes and file-access routines for the per-module (@.mix@)
 -- indexes used by Hpc.
@@ -136,8 +136,6 @@ checkHash tix mix@(Mix _ _ mixHash _ _) mixPath
   where
     modName = tixModuleName tix
     modHash = tixModuleHash tix
-
-------------------------------------------------------------------------------
 
 type MixEntryDom a = Tree (HpcPos, a)
 

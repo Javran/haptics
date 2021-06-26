@@ -1,8 +1,7 @@
----------------------------------------------------------
--- The main program for the hpc-add tool, part of HPC.
--- Andy Gill, Oct 2006
----------------------------------------------------------
-
+{-
+  The main program for the hpc-add tool, part of HPC.
+  Andy Gill, Oct 2006
+ -}
 module Trace.Haptics.Combine (sum_plugin, combine_plugin, map_plugin) where
 
 import Control.Monad
@@ -12,7 +11,6 @@ import Trace.Haptics.Flags
 import Trace.Haptics.Tix
 import Trace.Haptics.Utils
 
-------------------------------------------------------------------------------
 sum_options :: FlagOptSeq
 sum_options =
   excludeOpt
@@ -76,8 +74,6 @@ map_plugin =
     , init_flags = default_flags
     , final_flags = default_final_flags
     }
-
-------------------------------------------------------------------------------
 
 sum_main :: Flags -> [String] -> IO ()
 sum_main _ [] = hpcError sum_plugin $ "no .tix file specified"

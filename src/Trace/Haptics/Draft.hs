@@ -8,7 +8,6 @@ import Trace.Haptics.Utils
 import Trace.Haptics.Mix
 import Trace.Haptics.Tix
 
-------------------------------------------------------------------------------
 draft_options :: FlagOptSeq
 draft_options =
   excludeOpt
@@ -30,8 +29,6 @@ draft_plugin =
     , init_flags = default_flags
     , final_flags = default_final_flags
     }
-
-------------------------------------------------------------------------------
 
 draft_main :: Flags -> [String] -> IO ()
 draft_main _ [] = error "draft_main: unhandled case: []"

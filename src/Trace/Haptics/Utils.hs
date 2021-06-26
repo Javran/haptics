@@ -1,6 +1,7 @@
------------------------------------------
--- Andy Gill and Colin Runciman, June 2006
-------------------------------------------
+{-
+  Andy Gill and Colin Runciman, June 2006
+
+ -}
 
 -- | Minor utilities for the HPC tools.
 module Trace.Haptics.Utils where
@@ -88,8 +89,6 @@ instance Read HpcPos where
       (l2, c2) = case span (/= ':') rhs0 of
         (l, ':' : c) -> (l, c)
         _ -> parseError rhs0
-
-------------------------------------------------------------------------------
 
 -- Very simple Hash number generators
 

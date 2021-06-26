@@ -1,7 +1,7 @@
----------------------------------------------------------
--- The main program for the hpc-markup tool, part of HPC.
--- Andy Gill and Colin Runciman, June 2006
----------------------------------------------------------
+{-
+  The main program for the hpc-markup tool, part of HPC.
+  Andy Gill and Colin Runciman, June 2006
+ -}
 
 module Trace.Haptics.Markup (markup_plugin) where
 
@@ -13,10 +13,9 @@ import Data.Semigroup as Semi
 import qualified Data.Set as Set
 import System.FilePath
 import Trace.Haptics.Flags
-import Trace.Haptics.Utils
 import Trace.Haptics.Mix
 import Trace.Haptics.Tix
-
+import Trace.Haptics.Utils
 
 markup_options :: FlagOptSeq
 markup_options =
@@ -41,8 +40,6 @@ markup_plugin =
     , init_flags = default_flags
     , final_flags = default_final_flags
     }
-
-------------------------------------------------------------------------------
 
 markup_main :: Flags -> [String] -> IO ()
 markup_main flags (prog : modNames) = do
@@ -439,8 +436,6 @@ allowNesting IsTicked TickedOnlyFalse = False
 allowNesting IsTicked TickedOnlyTrue = False
 allowNesting _ _ = True
 
-------------------------------------------------------------------------------
-
 data ModuleSummary = ModuleSummary
   { expTicked :: !Int
   , expTotal :: !Int
@@ -519,7 +514,6 @@ instance Monoid ModuleSummary where
       }
   mappend = (<>)
 
-------------------------------------------------------------------------------
 -- global color palette
 
 red, green, yellow :: String

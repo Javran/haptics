@@ -168,8 +168,6 @@ unionModuleOpt = noArg
   "use the union of the module namespace (default is intersection)"
   $ \f -> f {mergeModule = UNION}
 
--------------------------------------------------------------------------------
-
 readMixWithFlags :: Flags -> Either String TixModule -> IO Mix
 readMixWithFlags flags modu =
   readMix
@@ -178,8 +176,6 @@ readMixWithFlags flags modu =
     , hpcDir <- hpcDirs flags
     ]
     modu
-
--------------------------------------------------------------------------------
 
 command_usage :: Plugin -> IO ()
 command_usage plugin =
@@ -199,8 +195,6 @@ hpcError plugin msg = do
   command_usage plugin
   exitFailure
 
--------------------------------------------------------------------------------
-
 data Plugin = Plugin
   { name :: String
   , usage :: String
@@ -210,8 +204,6 @@ data Plugin = Plugin
   , init_flags :: Flags
   , final_flags :: Flags -> Flags
   }
-
-------------------------------------------------------------------------------
 
 -- filterModules takes a list of candidate modules,
 -- and
@@ -242,7 +234,6 @@ filterTix :: Flags -> Tix -> Tix
 filterTix flags (Tix tixs) =
   Tix $ filter (allowModule flags . tixModuleName) tixs
 
-------------------------------------------------------------------------------
 -- HpcCombine specifics
 
 data CombineFn = ADD | DIFF | SUB
