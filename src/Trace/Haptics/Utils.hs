@@ -1,4 +1,4 @@
-module HpcUtils where
+module Trace.Haptics.Utils where
 
 import Trace.Hpc.Util (catchIO, HpcPos, fromHpcPos, readFileUtf8)
 import qualified Data.Map as Map

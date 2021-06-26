@@ -1,4 +1,4 @@
-module HpcLexer where
+module Trace.Haptics.Lexer where
 
 import Data.Char
 

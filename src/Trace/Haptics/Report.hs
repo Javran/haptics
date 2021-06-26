@@ -3,11 +3,11 @@
 -- Colin Runciman and Andy Gill, June 2006
 ---------------------------------------------------------
 
-module HpcReport (report_plugin) where
+module Trace.Haptics.Report (report_plugin) where
 
 import Prelude hiding (exp)
 import Data.List(sort,intersperse,sortBy)
-import HpcFlags
+import Trace.Haptics.Flags
 import Trace.Hpc.Mix
 import Trace.Hpc.Tix
 import Control.Monad hiding (guard)

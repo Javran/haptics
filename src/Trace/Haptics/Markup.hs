@@ -3,14 +3,14 @@
 -- Andy Gill and Colin Runciman, June 2006
 ---------------------------------------------------------
 
-module HpcMarkup (markup_plugin) where
+module Trace.Haptics.Markup (markup_plugin) where
 
 import Trace.Hpc.Mix
 import Trace.Hpc.Tix
 import Trace.Hpc.Util (HpcPos, fromHpcPos, writeFileUtf8)
 
-import HpcFlags
-import HpcUtils
+import Trace.Haptics.Flags
+import Trace.Haptics.Utils
 
 import System.FilePath
 import Data.List (sortBy, find)

@@ -3,12 +3,12 @@
 -- Andy Gill, Oct 2006
 ---------------------------------------------------------
 
-module HpcCombine (sum_plugin,combine_plugin,map_plugin) where
+module Trace.Haptics.Combine (sum_plugin,combine_plugin,map_plugin) where
 
 import Trace.Hpc.Tix
 import Trace.Hpc.Util
 
-import HpcFlags
+import Trace.Haptics.Flags
 
 import Control.Monad
 import qualified Data.Set as Set

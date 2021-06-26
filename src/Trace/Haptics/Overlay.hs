@@ -1,8 +1,8 @@
-module HpcOverlay where
+module Trace.Haptics.Overlay where
 
-import HpcFlags
-import HpcParser
-import HpcUtils
+import Trace.Haptics.Flags
+import Trace.Haptics.Parser
+import Trace.Haptics.Utils
 import Trace.Hpc.Tix
 import Trace.Hpc.Mix
 import Trace.Hpc.Util

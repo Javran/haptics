@@ -1,6 +1,6 @@
 -- (c) 2007 Andy Gill
 
-module HpcFlags where
+module Trace.Haptics.Flags where
 
 import System.Console.GetOpt
 import qualified Data.Set as Set

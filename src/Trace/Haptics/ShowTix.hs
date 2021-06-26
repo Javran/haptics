@@ -1,9 +1,9 @@
-module HpcShowTix (showtix_plugin) where
+module Trace.Haptics.ShowTix (showtix_plugin) where
 
 import Trace.Hpc.Mix
 import Trace.Hpc.Tix
 
-import HpcFlags
+import Trace.Haptics.Flags
 
 import qualified Data.Set as Set
 

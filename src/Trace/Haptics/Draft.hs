@@ -1,14 +1,14 @@
-module HpcDraft (draft_plugin) where
+module Trace.Haptics.Draft (draft_plugin) where
 
 import Trace.Hpc.Tix
 import Trace.Hpc.Mix
 import Trace.Hpc.Util
 
-import HpcFlags
+import Trace.Haptics.Flags
 
 import qualified Data.Set as Set
 import qualified Data.Map as Map
-import HpcUtils
+import Trace.Haptics.Utils
 import Data.Tree
 
 ------------------------------------------------------------------------------
