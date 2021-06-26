@@ -1,3 +1,5 @@
+{-# LANGUAGE DeriveGeneric #-}
+
 {-
 
   Andy Gill and Colin Runciman, June 2006
@@ -17,13 +19,15 @@ module Trace.Haptics.Tix
   )
 where
 
+import Control.DeepSeq
+import GHC.Generics
 import System.FilePath (replaceExtension)
 import Trace.Haptics.Utils (Hash, catchIO, readFileUtf8, writeFileUtf8)
 
 -- | 'Tix' is the storage format for our dynamic information about
 -- what boxes are ticked.
 data Tix = Tix [TixModule]
-  deriving (Read, Show, Eq)
+  deriving (Read, Show, Eq, Generic)
 
 data TixModule
   = TixModule
@@ -31,7 +35,16 @@ data TixModule
       Hash --  hash number
       Int --  length of Tix list (allows pre-allocation at parse time).
       [Integer] --  actual ticks
-  deriving (Read, Show, Eq)
+  deriving
+    ( Read
+    , Show
+    , Eq
+    , Generic
+    )
+
+instance NFData Tix
+
+instance NFData TixModule
 
 -- TODO: Turn extractors below into proper 'TixModule' field-labels
 tixModuleName :: TixModule -> String

@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveGeneric #-}
 {-
   Andy Gill and Colin Runciman, June 2006
 
@@ -6,7 +7,8 @@
 -- | Minor utilities for the HPC tools.
 module Trace.Haptics.Utils where
 
-import Control.DeepSeq (deepseq)
+
+import Control.DeepSeq (deepseq, NFData)
 import qualified Control.Exception as Exception
 import Data.Bits (xor)
 import Data.Char (ord)
@@ -16,6 +18,7 @@ import Data.Word
 import System.Directory (createDirectoryIfMissing)
 import System.FilePath
 import System.IO
+import GHC.Generics
 
 -- | grab's the text behind a HpcPos;
 grabHpcPos :: Map.Map Int String -> HpcPos -> String
@@ -95,7 +98,7 @@ instance Read HpcPos where
 class HpcHash a where
   toHash :: a -> Hash
 
-newtype Hash = Hash Word32 deriving (Eq)
+newtype Hash = Hash Word32 deriving (Eq, Generic)
 
 instance Read Hash where
   readsPrec p n =
@@ -105,6 +108,8 @@ instance Read Hash where
 
 instance Show Hash where
   showsPrec p (Hash n) = showsPrec p n
+
+instance NFData Hash
 
 instance Num Hash where
   (Hash a) + (Hash b) = Hash $ a + b

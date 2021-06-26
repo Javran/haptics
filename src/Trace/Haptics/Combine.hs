@@ -2,14 +2,19 @@
   The main program for the hpc-add tool, part of HPC.
   Andy Gill, Oct 2006
  -}
-module Trace.Haptics.Combine (sum_plugin, combine_plugin, map_plugin) where
+module Trace.Haptics.Combine
+  ( sum_plugin
+  , combine_plugin
+  , map_plugin
+  )
+where
 
+import Control.DeepSeq
 import Control.Monad
 import qualified Data.Map as Map
 import qualified Data.Set as Set
 import Trace.Haptics.Flags
 import Trace.Haptics.Tix
-import Trace.Haptics.Utils
 
 sum_options :: FlagOptSeq
 sum_options =
@@ -131,7 +136,7 @@ map_main _ _ = hpcError map_plugin $ "to many .tix files specified"
 mergeTixFile :: Flags -> (Integer -> Integer -> Integer) -> Tix -> String -> IO Tix
 mergeTixFile flags fn tix file_name = do
   Just new_tix <- readTix file_name
-  return $! strict $ mergeTix (mergeModule flags) fn tix (filterTix flags new_tix)
+  return $!! mergeTix (mergeModule flags) fn tix (filterTix flags new_tix)
 
 -- could allow different numbering on the module info,
 -- as long as the total is the same; will require normalization.
@@ -179,35 +184,3 @@ mergeTix
           [ (tixModuleName tix, tix)
           | tix <- t2
           ]
-
--- What I would give for a hyperstrict :-)
--- This makes things about 100 times faster.
-class Strict a where
-  strict :: a -> a
-
-instance Strict Integer where
-  strict i = i
-
-instance Strict Int where
-  strict i = i
-
-instance Strict Hash where -- should be fine, because Hash is a newtype round an Int
-  strict i = i
-
-instance Strict Char where
-  strict i = i
-
-instance Strict a => Strict [a] where
-  strict (a : as) = (((:) $! strict a) $! strict as)
-  strict [] = []
-
-instance (Strict a, Strict b) => Strict (a, b) where
-  strict (a, b) = (((,) $! strict a) $! strict b)
-
-instance Strict Tix where
-  strict (Tix t1) =
-    Tix $! strict t1
-
-instance Strict TixModule where
-  strict (TixModule m1 p1 i1 t1) =
-    ((((TixModule $! strict m1) $! strict p1) $! strict i1) $! strict t1)
