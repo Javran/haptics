@@ -21,6 +21,7 @@ library:
     - -O2
   build-tools:
     - happy
+  generated-exposed-modules: Paths_haptics
 
 executables:
   haptics:
