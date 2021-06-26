@@ -96,7 +96,7 @@ sum_main flags (first_file : more_files) = do
 
 combine_main :: Flags -> [String] -> IO ()
 combine_main flags [first_file, second_file] = do
-  let f = theCombineFun (combineFun flags)
+  let f = theCombineFun (combineFn flags)
 
   Just tix1 <- readTix first_file
   Just tix2 <- readTix second_file
@@ -141,7 +141,7 @@ mergeTixFile flags fn tix file_name = do
 -- as long as the total is the same; will require normalization.
 
 mergeTix
-  :: MergeFun
+  :: MergeFn
   -> (Integer -> Integer -> Integer)
   -> Tix
   -> Tix
@@ -167,7 +167,7 @@ mergeTix
         (Nothing, Just m2) ->
           m2
         _ -> error "impossible"
-      | m <- Set.toList (theMergeFun modComb m1s m2s)
+      | m <- Set.toList (theMergeFn modComb m1s m2s)
       ]
     where
       m1s = Set.fromList $ map tixModuleName t1

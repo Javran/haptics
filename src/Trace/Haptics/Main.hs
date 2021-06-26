@@ -35,7 +35,7 @@ helpList =
       [ name hook
       | hook <- hooks
       , name hook
-          `notElem` (concat [help, reporting, processing, overlays])
+          `notElem` concat [help, reporting, processing, overlays]
       ]
 
 section :: String -> [String] -> String
@@ -52,8 +52,8 @@ section msg cmds =
 dispatch :: [String] -> IO ()
 dispatch [] = do
   helpList
-  exitWith ExitSuccess
-dispatch (txt : args0) = do
+  exitSuccess
+dispatch (txt : args0) =
   case lookup txt hooks' of
     Just plugin -> parse plugin args0
     _ -> parse help_plugin (txt : args0)
@@ -67,22 +67,18 @@ dispatch (txt : args0) = do
               [ putStr ("  " ++ err)
               | err <- errs
               ]
-            putStrLn $ "\n"
+            putStrLn "\n"
             command_usage plugin
             exitFailure
         (o, ns, _) -> do
           let flags =
                 final_flags plugin $
-                  foldr (.) id o $
-                    init_flags plugin
+                  foldr ($) (
+                    init_flags plugin) o
           implementation plugin flags ns
 
 main :: IO ()
-main = do
-  args <- getArgs
-  dispatch args
-
-------------------------------------------------------------------------------
+main = getArgs >>= dispatch
 
 hooks :: [Plugin]
 hooks =
@@ -101,7 +97,6 @@ hooks =
 hooks' :: [(String, Plugin)]
 hooks' = [(name hook, hook) | hook <- hooks]
 
-------------------------------------------------------------------------------
 
 help_plugin :: Plugin
 help_plugin =
@@ -118,15 +113,15 @@ help_plugin =
 help_main :: Flags -> [String] -> IO ()
 help_main _ [] = do
   helpList
-  exitWith ExitSuccess
-help_main _ (sub_txt : _) = do
+  exitSuccess
+help_main _ (sub_txt : _) =
   case lookup sub_txt hooks' of
     Nothing -> do
       putStrLn $ "no such hpc command : " ++ sub_txt
       exitFailure
     Just plugin' -> do
       command_usage plugin'
-      exitWith ExitSuccess
+      exitSuccess
 
 help_options :: FlagOptSeq
 help_options = id

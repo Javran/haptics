@@ -22,9 +22,9 @@ data Flags = Flags
   , xmlOutput :: Bool
   , funTotals :: Bool
   , altHighlight :: Bool
-  , combineFun :: CombineFun -- tick-wise combine
+  , combineFn :: CombineFn -- tick-wise combine
   , postFun :: PostFun --
-  , mergeModule :: MergeFun -- module-wise merge
+  , mergeModule :: MergeFn -- module-wise merge
   , verbosity :: Verbosity
   }
 
@@ -42,7 +42,7 @@ default_flags =
     , xmlOutput = False
     , funTotals = False
     , altHighlight = False
-    , combineFun = ADD
+    , combineFn = ADD
     , postFun = ID
     , mergeModule = INTERSECTION
     , verbosity = Normal
@@ -148,7 +148,7 @@ combineFunOpt = anArg
   "combine .tix files with join function, default = ADD"
   "FUNCTION"
   $ \a f -> case reads (map toUpper a) of
-    [(c, "")] -> f {combineFun = c}
+    [(c, "")] -> f {combineFn = c}
     _ -> error $ "no such combine function : " ++ a
 combineFunOptInfo =
   infoArg $
@@ -245,16 +245,16 @@ filterTix flags (Tix tixs) =
 ------------------------------------------------------------------------------
 -- HpcCombine specifics
 
-data CombineFun = ADD | DIFF | SUB
+data CombineFn = ADD | DIFF | SUB
   deriving (Eq, Show, Read, Enum)
 
-theCombineFun :: CombineFun -> Integer -> Integer -> Integer
+theCombineFun :: CombineFn -> Integer -> Integer -> Integer
 theCombineFun fn = case fn of
-  ADD -> \l r -> l + r
+  ADD -> (+)
   SUB -> \l r -> max 0 (l - r)
   DIFF -> \g b -> if g > 0 then 0 else min 1 b
 
-foldFuns :: [(String, CombineFun)]
+foldFuns :: [(String, CombineFn)]
 foldFuns =
   [ (show comb, comb)
   | comb <- [ADD .. SUB]
@@ -275,14 +275,14 @@ postFuns =
   | pos <- [ID .. ZERO]
   ]
 
-data MergeFun = INTERSECTION | UNION
+data MergeFn = INTERSECTION | UNION
   deriving (Eq, Show, Read, Enum)
 
-theMergeFun :: (Ord a) => MergeFun -> Set.Set a -> Set.Set a -> Set.Set a
-theMergeFun INTERSECTION = Set.intersection
-theMergeFun UNION = Set.union
+theMergeFn :: (Ord a) => MergeFn -> Set.Set a -> Set.Set a -> Set.Set a
+theMergeFn INTERSECTION = Set.intersection
+theMergeFn UNION = Set.union
 
-mergeFuns :: [(String, MergeFun)]
+mergeFuns :: [(String, MergeFn)]
 mergeFuns =
   [ (show pos, pos)
   | pos <- [INTERSECTION, UNION]
