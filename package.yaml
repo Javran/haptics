@@ -16,11 +16,11 @@ dependencies:
 
 library:
   source-dirs: src
+  verbatim:
+    build-tool-depends: happy:happy
   ghc-options:
     - -Wall
     - -O2
-  build-tools:
-    - happy
   generated-exposed-modules: Paths_haptics
 
 executables:
