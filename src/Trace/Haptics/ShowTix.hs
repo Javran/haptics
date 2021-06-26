@@ -2,8 +2,8 @@ module Trace.Haptics.ShowTix (showtix_plugin) where
 
 import qualified Data.Set as Set
 import Trace.Haptics.Flags
-import Trace.Hpc.Mix
-import Trace.Hpc.Tix
+import Trace.Haptics.Mix
+import Trace.Haptics.Tix
 
 showtix_options :: FlagOptSeq
 showtix_options =

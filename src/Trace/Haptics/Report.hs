@@ -9,8 +9,8 @@ import Control.Monad hiding (guard)
 import Data.List (intersperse, sort, sortBy)
 import qualified Data.Set as Set
 import Trace.Haptics.Flags
-import Trace.Hpc.Mix
-import Trace.Hpc.Tix
+import Trace.Haptics.Mix
+import Trace.Haptics.Tix
 import Prelude hiding (exp)
 
 notExpecting :: String -> a

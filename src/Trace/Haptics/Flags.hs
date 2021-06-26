@@ -7,8 +7,8 @@ import qualified Data.Set as Set
 import System.Console.GetOpt
 import System.Exit
 import System.FilePath
-import Trace.Hpc.Mix
-import Trace.Hpc.Tix
+import Trace.Haptics.Mix
+import Trace.Haptics.Tix
 
 data Flags = Flags
   { outputFile :: String

@@ -5,9 +5,8 @@ import qualified Data.Set as Set
 import Data.Tree
 import Trace.Haptics.Flags
 import Trace.Haptics.Utils
-import Trace.Hpc.Mix
-import Trace.Hpc.Tix
-import Trace.Hpc.Util
+import Trace.Haptics.Mix
+import Trace.Haptics.Tix
 
 ------------------------------------------------------------------------------
 draft_options :: FlagOptSeq

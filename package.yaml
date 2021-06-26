@@ -12,7 +12,8 @@ dependencies:
 - filepath
 - containers
 - array
-- hpc
+- deepseq
+- time
 
 library:
   source-dirs: src

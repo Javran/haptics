@@ -3,11 +3,10 @@ module Trace.Haptics.Overlay where
 import qualified Data.Map as Map
 import Data.Tree
 import Trace.Haptics.Flags
+import Trace.Haptics.Mix
 import Trace.Haptics.Parser
+import Trace.Haptics.Tix
 import Trace.Haptics.Utils
-import Trace.Hpc.Mix
-import Trace.Hpc.Tix
-import Trace.Hpc.Util
 
 overlay_options :: FlagOptSeq
 overlay_options =

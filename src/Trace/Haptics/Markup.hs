@@ -14,11 +14,9 @@ import qualified Data.Set as Set
 import System.FilePath
 import Trace.Haptics.Flags
 import Trace.Haptics.Utils
-import Trace.Hpc.Mix
-import Trace.Hpc.Tix
-import Trace.Hpc.Util (HpcPos, fromHpcPos, writeFileUtf8)
+import Trace.Haptics.Mix
+import Trace.Haptics.Tix
 
-------------------------------------------------------------------------------
 
 markup_options :: FlagOptSeq
 markup_options =

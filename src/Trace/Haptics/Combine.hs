@@ -9,8 +9,8 @@ import Control.Monad
 import qualified Data.Map as Map
 import qualified Data.Set as Set
 import Trace.Haptics.Flags
-import Trace.Hpc.Tix
-import Trace.Hpc.Util
+import Trace.Haptics.Tix
+import Trace.Haptics.Utils
 
 ------------------------------------------------------------------------------
 sum_options :: FlagOptSeq
